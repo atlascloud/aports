@@ -1,0 +1,7 @@
+README.md
+LICENSE
+**/*.real
+.git
+.ccache
+.abuild
+distfiles
