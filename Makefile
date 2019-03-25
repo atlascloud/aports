@@ -3,6 +3,7 @@
 ## Build the baseimage that is used to build ceph packages
 baseimage:
 	docker build --pull --tag atlascloud/ceph-builder .
+	docker push atlascloud/ceph-builder
 
 ## Build the actual ceph packages
 build:
