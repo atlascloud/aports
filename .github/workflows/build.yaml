@@ -1,0 +1,61 @@
+---
+name: build packages
+
+'on': push
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        release: [edge]  # TODO 3.12, 3.11, etc
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - uses: actions/cache@v2
+        with:
+          path: |
+            apkcache/
+            distfiles/
+            packages/
+            .ccache/
+          key: ${{ matrix.release }}
+      - run: |
+          pwd ; find * ; env
+          mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
+          sudo chown -R 1000:1000 .
+          make build
+        env:
+          RELEASE: ${{ matrix.release }}
+          PACKAGER: ${{ secrets.PACKAGER }}
+          PACKAGER_PRIVKEY: ${{ secrets.PACKAGER_PRIVKEY }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          JOBS: ${{ secrets.JOBS }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ matrix.release }}-main
+          release_name: Release ${{ matrix.release }}-main
+          draft: false
+          prerelease: false
+          body: Alpine Linux packages for ${{ matrix.release }}
+      - name: Upload APKs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPODEST: ~/packages/${{ matrix.release }}
+        run: |
+          find .
+          for apk in ${REPODEST}/main/*.apk ; do
+            curl \
+              -XPOST \
+              -H"Accept: application/vnd.github.v3+json" \
+              -H"authorization: Bearer $GITHUB_TOKEN" \
+              "${{ steps.create_release.outputs.upload_url }}?name=${apk}" \
+              --data-binary @${apk}
+          done

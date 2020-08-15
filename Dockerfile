@@ -1,12 +1,12 @@
-# Build a docker image that's ready to build ceph
+# Build a docker image that's ready to build packages
 
-# some dependencies are only in edge, TODO build for 3.9 later too
+# some dependencies are only in edge, TODO build for stable releases later too
 FROM alpine:edge
 
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
+# RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 
-RUN apk add abuild bash build-base ccache cmake coreutils git m4 sudo ; \
-  apk upgrade
+RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo ; \
+  apk upgrade -a
 
 # Do all the build stuff that abuild requires
 # https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package
@@ -19,7 +19,8 @@ RUN addgroup build ; \
 
 USER build
 
-# enable ccache because we're going to need it
-ENV PATH=/usr/lib/ccache/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+WORKDIR /home/build
 
-WORKDIR /home/build/main/ceph
+ENV USE_CCACHE=true
+
+ENTRYPOINT ["/home/build/entrypoint.sh"]

@@ -5,3 +5,5 @@ LICENSE
 .ccache
 .abuild
 distfiles
+apkcache
+src/
