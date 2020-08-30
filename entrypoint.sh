@@ -1,6 +1,6 @@
-#!/bin/sh -x
+#!/bin/sh
 
-MIRROR_URI="http://dl-cdn.alpinelinux.org/alpine/${RELEASE}"
+MIRROR_URI="http://dl-cdn.alpinelinux.org/alpine/$RELEASE"
 APORTS_DIR="${APORTS_DIR:-/home/build}"
 
 die() {
@@ -38,6 +38,7 @@ set_repositories_for() {
 	local target_repo="$1"
 
 	local repo; for repo in main community testing; do
+	  echo "Adding $MIRROR_URI/$repo to /etc/apk/repositories"
 		echo "$MIRROR_URI/$repo" | sudo tee -a /etc/apk/repositories
 		[ "$repo" = "$target_repo" ] && break
 	done
@@ -50,7 +51,7 @@ cd $APORTS_DIR
 mkdir -p $HOME/packages/$RELEASE/main/x86_64
 
 # lay down private key file
-echo -en ${SIGNING_KEY} | tee ~/.abuild/packages@kws1.com-5f35c485.rsa
+echo -en ${SIGNING_KEY} > ~/.abuild/packages@kws1.com-5f35c485.rsa
 sudo cp ~/.abuild/packages@kws1.com-5f35c485.rsa.pub /etc/apk/keys/
 
 commit_range="$(git rev-parse 'HEAD^1')..HEAD"

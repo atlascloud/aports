@@ -10,7 +10,8 @@ build:
 	# docker pull atlascloud/ceph-builder
 	docker run --rm \
 		--privileged \
-		-e PACKAGER -e PACKAGER_PRIVKEY -e SIGNING_KEY -e JOBS=5 \
+		-e PACKAGER -e PACKAGER_PRIVKEY -e SIGNING_KEY \
+		-e JOBS=5 -e RELEASE -e APORTS_DIR -e REPODEST \
 		-v $(PWD):/home/build \
 		-v $(PWD)/apkcache:/etc/apk/cache \
 		-v $(PWD)/distfiles:/var/cache/distfiles \
