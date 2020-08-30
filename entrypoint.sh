@@ -51,6 +51,7 @@ mkdir -p $HOME/packages/$RELEASE/main/x86_64
 
 # lay down private key file
 echo -en ${SIGNING_KEY} | tee ~/.abuild/packages@kws1.com-5f35c485.rsa
+sudo cp ~/.abuild/packages@kws1.com-5f35c485.rsa.pub /etc/apk/keys/
 
 commit_range="$(git rev-parse 'HEAD^1')..HEAD"
 
