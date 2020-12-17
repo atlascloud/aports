@@ -1,0 +1,51 @@
+---
+name: check package versions for upgrades
+
+'on':
+  push:
+  schedule:
+    - cron: "0 */12 * * *"
+
+jobs:
+  check-package-updates:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # We use this specific token to push because the default token
+          # causes the event to build the newly pushed commit not to fire
+          token: ${{ secrets.APORTS_PUSH_TOKEN }}
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -x
+
+          # some configuration in case we push any changes
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          # git config
+
+          # check each packages latest version, update the APKBUILD and commit if any changes
+          for pkg in $( cd main ; find -maxdepth 1 -mindepth 1 -type d -printf '%P\n'); do
+            [ -f "./checkers/$pkg" ] || continue # if we don't have a checker, skip
+
+            latest_version=$(./checkers/$pkg)
+            sed -i "s:pkgver=.*:pkgver=$latest_version:" main/$pkg/APKBUILD
+            sed -i "s:pkgrel=.*:pkgrel=0:" main/$pkg/APKBUILD
+
+            if ! git diff --stat --exit-code main/$pkg ; then
+              echo "Changes found in main/$pkg. Updating checksum & committing."
+              docker run --rm -v $(pwd):/aports --workdir /aports/main/$pkg alpine:edge sh -c "apk add abuild ; abuild -F checksum"
+
+              git checkout -b package_bump/main/$pkg
+
+              git add main/$pkg
+              git commit -m "main/$pkg: upgrade to $latest_version"
+              # push any changes we may have committed
+              # we do this here so each update package becomes it's own branch
+              # which can then be PR'ed separately
+              git push origin package_bump/main/$pkg
+              gh config set prompt disabled
+              gh pr create --assignee iggy --fill
+            fi
+          done

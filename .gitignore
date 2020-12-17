@@ -6,3 +6,4 @@ src/
 .ash_history
 .env
 # .abuild/
+.vscode

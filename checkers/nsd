@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+
+# Output the latest version of the package to be replaced in the APKBUILD file
+
+# for whatever reason, nsd doesn't use GH releases, but they do tag versions
+# like so. We just need to parse out the numbers and find the latest version
+# NSD_4_3_3_REL
+# NSD_4_3_3_RC1
+# NSD_4_3_2_REL
+# NSD_4_3_2_RC1
+# NSD_4_3_1_REL
+# NSD_4_3_1_RC2
+# NSD_4_3_1_RC1
+# NSD_4_3_0_REL
+# NSD_4_3_0_RC1
+
+import requests
+from pkg_resources import parse_version
+
+highest_version = '0.0.0'
+
+r = requests.get('https://api.github.com/repos/nlnetlabs/nsd/tags')
+
+j = r.json()
+
+for t in j:
+    if t['name'].startswith('NSD_') and t['name'].endswith('_REL'):
+        vers = t['name'].split('_', 1)[1].rsplit('_', 1)[0].replace('_', '.')
+        if parse_version(vers) > parse_version(highest_version):
+            highest_version = vers
+
+print(highest_version)
