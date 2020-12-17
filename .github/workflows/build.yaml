@@ -35,51 +35,16 @@ jobs:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           JOBS: ${{ secrets.JOBS }}
           REPODEST: /home/build/packages/${{ matrix.release }}
-      # TODO upload to new package server
-      # - name: Get Or Create Release
-      #   id: create_release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     REPODEST: /home/build/packages/${{ matrix.release }}
-      #   run: |
-      #     release_id=$(curl -sSL \
-      #       -H"Accept: application/vnd.github.v3+json" \
-      #       -H"authorization: Bearer $GITHUB_TOKEN" \
-      #       $GITHUB_API_URL/repos/atlascloud/aports/releases/tags/${{ matrix.release }}-main \
-      #         | jq '.id')
-      #     if [ "$release_id" == "" ] ; then
-      #       release_id=$(curl -sSL \
-      #         -XPOST \
-      #         -H"Accept: application/vnd.github.v3+json" \
-      #         -H"authorization: Bearer $GITHUB_TOKEN" \
-      #         -d"{\"tag_name\":\"${{ matrix.release }}-main\",\"name\":\"Release ${{ matrix.release }}-main\",\"body\":\"Alpine Linux packages for ${{ matrix.release }}\"}" \
-      #         $GITHUB_API_URL/repos/atlascloud/aports/releases | jq '.id')
-      #     fi
-      #     echo "::set-env name=RELEASE_ID::$release_id"
-      #     # TODO should get from the response of the get/create release call
-      #     echo "::set-output name=upload_url::https://uploads.github.com/repos/atlascloud/aports/releases/$release_id/assets"
-      # - name: Upload APKs
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     REPODEST: /home/build/packages/${{ matrix.release }}
-      #   run: |
-      #     # we have to have the apkindex asset id to be able to upload the
-      #     # newest one after we built new packages
-      #     apkindex_asset_id=$(curl -sSL \
-      #       -H"Accept: application/vnd.github.v3+json" \
-      #       $GITHUB_API_URL/repos/atlascloud/aports/releases/$RELEASE_ID/assets \
-      #       | jq '.[] | select(.name == "APKINDEX.tar.gz").id')
-      #     curl -sSL -XDELETE \
-      #       $GITHUB_API_URL/repos/atlascloud/aports/releases/assets/$apkindex_asset_id
-
-      #     cd packages/${{ matrix.release }}/main/x86_64
-      #     for apk in *.apk APKINDEX.tar.gz ; do
-      #       echo "Uploading $apk to github"
-      #       curl -sSL \
-      #         -XPOST \
-      #         -H"Content-Type: application/octet-stream" \
-      #         -H"Accept: application/vnd.github.v3+json" \
-      #         -H"authorization: Bearer $GITHUB_TOKEN" \
-      #         "${{ steps.create_release.outputs.upload_url }}?name=${apk}" \
-      #         --data-binary @${apk} | jq '.'
-      #     done
+      # if we are merging into the master branch, upload the built package
+      - if: github.ref == 'refs/heads/master'
+        run: |
+          set -x
+          cd packages/${{ matrix.release }}/main/x86_64
+          for apk in $(find . -type f -name '*.apk') ; do
+            echo "Uploading $apk to packages.atlascloud.xyz"
+            curl -sSL \
+              -H 'Authorization: Bearer ${{ secrets.PACKAGES_TOKEN }}' \
+              -F "architecture=x86_64;type=text/plain" \
+              -F "package=@${apk}" \
+              https://packages.atlascloud.xyz/api/o/atlascloud/r/${{ matrix.release }}/v/edge
+          done
