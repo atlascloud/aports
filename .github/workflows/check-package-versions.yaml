@@ -15,6 +15,8 @@ jobs:
           # We use this specific token to push because the default token
           # causes the event to build the newly pushed commit not to fire
           token: ${{ secrets.APORTS_PUSH_TOKEN }}
+          # pull all branches and tags, we need this to determine if we already have a branch below
+          fetch-depth: 0
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -34,6 +36,11 @@ jobs:
             sed -i "s:pkgrel=.*:pkgrel=0:" main/$pkg/APKBUILD
 
             if ! git diff --stat --exit-code main/$pkg ; then
+              git branch -av
+              # if the branch already exists, we can assume the original PR
+              # already exists and just hasn't been merged yet
+              git branch -a | grep -q "package_bump/main/$pkg" && continue
+
               echo "Changes found in main/$pkg. Updating checksum & committing."
               docker run --rm -v $(pwd):/aports --workdir /aports/main/$pkg alpine:edge sh -c "apk add abuild ; abuild -F checksum"
 
