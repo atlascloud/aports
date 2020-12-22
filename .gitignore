@@ -7,3 +7,4 @@ src/
 .env
 # .abuild/
 .vscode
+tmp/

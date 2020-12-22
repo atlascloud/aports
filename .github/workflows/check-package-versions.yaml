@@ -42,7 +42,10 @@ jobs:
               git branch -a | grep -q "package_bump/main/$pkg" && continue
 
               echo "Changes found in main/$pkg. Updating checksum & committing."
-              docker run --rm -v $(pwd):/aports --workdir /aports/main/$pkg alpine:edge sh -c "apk add abuild ; abuild -F checksum"
+              docker run --rm \
+                -v $(pwd):/aports \
+                --workdir /aports/main/$pkg \
+                alpine:edge sh -c "apk add abuild ; abuild -F checksum"
 
               git checkout -b package_bump/main/$pkg
 

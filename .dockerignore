@@ -1,9 +1,11 @@
 README.md
 LICENSE
+Dockerfile
 **/*.real
-.git
-.ccache
-.abuild
-distfiles
-apkcache
+.git/
+.ccache/
+.abuild/
+distfiles/
+apkcache/
 src/
+tmp/

@@ -1,0 +1,5 @@
+rules:
+	# This is a container meant for building other software, not for running a service
+  # these config settings are safe and have been in use for this image for ages
+  sudo_usage: off
+  apkadd-missing_nocache_or_updaterm: off

@@ -5,8 +5,12 @@ FROM alpine:edge
 
 # RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 
-RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo ; \
-  apk upgrade -a
+# This is a container for building other software, it doesn't need pinned packages/etc
+# Also, the edge docker image gets pretty dated at times when ncopa is prep'ing a new release
+# hadolint ignore=DL3017,DL3018,DL3019
+RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo
+# hadolint ignore=DL3017,DL3018,DL3019
+RUN apk upgrade -s
 
 # Do all the build stuff that abuild requires
 # https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package

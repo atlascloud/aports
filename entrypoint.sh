@@ -1,10 +1,12 @@
 #!/bin/sh
+# shellcheck disable=SC2039,SC2155
 
 MIRROR_URI="http://dl-cdn.alpinelinux.org/alpine/$RELEASE"
 APORTS_DIR="${APORTS_DIR:-/home/build}"
 
 die() {
-	echo "$@\n" 1>&2
+	echo "$@" 1>&2
+	echo 1>&2
 	exit 1
 }
 
@@ -19,10 +21,10 @@ changed_abuilds() {
 	# but ignore deleted ones.
 	local committed_aports="$(git diff-tree -r --relative="$repo" --name-only --diff-filter=ACMR \
 					"$commit_ish" -- '*APKBUILD' | xargs -I% dirname % | xargs)"
-	local uncommitted_aports="$(git status -s -u -- ${repo}/*APKBUILD | xargs -I% dirname % | cut -f2 -d/)"
+	local uncommitted_aports="$(git status -s -u -- "${repo}"/*APKBUILD | xargs -I% dirname % | cut -f2 -d/)"
 
 	# remove duplicates from the lists
-	local aports="$(echo -e $committed_aports\\n$uncommitted_aports | uniq)"
+	local aports="$(echo -e "$committed_aports"\\n"$uncommitted_aports" | uniq)"
 
 	# Sort abuilds by build order.
 	# ap builddirs -d "$(pwd)/$repo" $aports 2>/dev/null | xargs -I% basename %
@@ -38,7 +40,7 @@ set_repositories_for() {
 	local target_repo="$1"
 
 	local repo; for repo in main community testing; do
-	  echo "Adding $MIRROR_URI/$repo to /etc/apk/repositories"
+		echo "Adding $MIRROR_URI/$repo to /etc/apk/repositories"
 		echo "$MIRROR_URI/$repo" | sudo tee -a /etc/apk/repositories
 		[ "$repo" = "$target_repo" ] && break
 	done
@@ -46,12 +48,12 @@ set_repositories_for() {
 	sudo apk update
 }
 
-cd $APORTS_DIR
+cd "$APORTS_DIR" || exit
 
-mkdir -p $HOME/packages/$RELEASE/main/x86_64
+mkdir -p "$HOME"/packages/"$RELEASE"/main/x86_64
 
 # lay down private key file
-echo -en ${SIGNING_KEY} > ~/.abuild/packages@kws1.com-5f35c485.rsa
+echo -en "${SIGNING_KEY}" > ~/.abuild/packages@kws1.com-5f35c485.rsa
 sudo cp ~/.abuild/packages@kws1.com-5f35c485.rsa.pub /etc/apk/keys/
 
 commit_range="$(git rev-parse 'HEAD^1')..HEAD"
@@ -59,17 +61,18 @@ commit_range="$(git rev-parse 'HEAD^1')..HEAD"
 echo 'Diffstat:'
 git --no-pager diff --color --stat "$commit_range"
 
+# shellcheck disable=SC2043
 for repo in main; do
 	set_repositories_for "$repo"
 
-		oIFS=$IFS
-		IFS="
+	oIFS=$IFS
+	IFS="
 "
 	for pkgname in $(changed_abuilds "$repo" "$commit_range"); do
 		qname="$repo/$pkgname"
 
 		echo "$pkgname" "Building package $qname"
-		cd $qname
+		cd "$qname" || continue
 
 		if abuild -r; then
 			checkapk || :
@@ -78,9 +81,10 @@ for repo in main; do
 			failed_pkgs="$failed_pkgs $qname"
 		fi
 
-		cd - >/dev/null
+		cd "$APORTS_DIR" || exit
 		echo "$pkgname"
 	done
+
 	IFS=$oIFS
 done
 
@@ -89,7 +93,7 @@ done
 
 printf '\n----\n'
 if [ -n "$successful_pkgs" ]; then
-	echo "Successfully built packages:$successful_pkgs\n"
+	echo "Successfully built packages:$successful_pkgs"
 fi
 if [ -n "$failed_pkgs" ]; then
 	die "Failed to build packages:$failed_pkgs"
