@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# return the latest stable kernel version
+
+curl -sSL http://kernel.org/releases.json | jq -r .latest_stable.version
