@@ -1,8 +1,9 @@
+# Contributor: Iggy Jackson <iggy@atlascloud.xyz>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 
 _flavor=stable
 pkgname=linux-${_flavor}
-pkgver=5.8.1
+pkgver=5.10.2
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
@@ -13,7 +14,7 @@ url="https://www.kernel.org"
 depends="mkinitfs"
 _depends_dev="perl gmp-dev elfutils-dev bash flex bison"
 makedepends="$_depends_dev sed installkernel bc linux-headers linux-firmware-any openssl-dev
-	diffutils"
+	diffutils python3 argp-standalone findutils zstd gawk"
 options="!strip"
 _config=${config:-config-stable.${CARCH}}
 install=
@@ -96,7 +97,7 @@ oldconfig() {
 		make -C "$srcdir"/linux-$_kernver \
 			O="$_builddir" \
 			ARCH="$_carch" \
-			listnewconfig oldconfig
+			listnewconfig olddefconfig
 	done
 }
 
@@ -208,8 +209,8 @@ _dev() {
 		"$subpkgdir"/lib/modules/${_abi_release}/build
 }
 
-sha512sums="45a53ecf351096ef6e98242cca4228b8da9b9139ecc6963695791ea6fb7a9484a4e1c19dcca7ce7cbfdfa49de0451b70973bb078f12bdae9cbaddbc3f8092556  linux-5.8.tar.xz
-a9e3feb27885888a7ad47195e777861e8bc0f6d66b07997c9ad3b88e7ad0fdbb1dcc116b729f6b55c4f72bc54b73729aca8290c7c7ca2286de1238d39868122c  config-stable.x86_64
-b41e72dc0c4d541c1febe7604955ee3d54aa72b23c45416a96a5175cfb93a98bc17e67579e9319326f21f11d6d4b0730149d2dcd4f91ac477f9ae800700122c6  config-virt.x86_64
-36073168fe7478f93e5b9dc7f4214891f1eabb9b908c0282032770be21bd49adb51040037dd7a901b24910dfbbc65d507c75d71153b746021e0558d5e9aa30ae  patch-5.8.1.xz"
 
+sha512sums="95bc137d0cf9148da6a9d1f1a878698dc27b40f68e22c597544010a6c591ce1b256f083489d3ff45ff77753289b535135590194d88ef9f007d0ddab3d74de70e  linux-5.10.tar.xz
+3f44fcef90a0523bb017b27fe4ab86a01857d18155a8a7ea35428c82a392d2db29cb62357025aa0463fd67d9cc4b45c8b6234fc7f1e425e5e34a557232ae0d30  config-stable.x86_64
+56aeb7cc4dfbbe110eaa6491bc60d3827d33bf872948b2f75f351596155c8ef32bc69e870fac441415f93d6f894c95a4a39e0181a2d92ee4e68543ac3d16cc26  config-virt.x86_64
+bc68175046235bdb74783e82b8f6d6a6e37e7a93d972989703ffb8bce450d70f4883b317033122482d22ba2ebeddd1742f32ba8051ad4c8b8259a8be7322a3e9  patch-5.10.2.xz"
