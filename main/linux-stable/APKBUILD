@@ -15,7 +15,7 @@ depends="mkinitfs"
 _depends_dev="perl gmp-dev elfutils-dev bash flex bison"
 makedepends="$_depends_dev sed installkernel bc linux-headers linux-firmware-any openssl-dev
 	diffutils python3 argp-standalone findutils zstd gawk"
-options="!strip"
+options="!strip !check"
 _config=${config:-config-stable.${CARCH}}
 install=
 source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver.tar.xz
@@ -211,6 +211,6 @@ _dev() {
 
 
 sha512sums="a567ec133018bb5ec00c60281479b466c26e02137a93a9c690e83997947df02b6fd94e76e8df748f6d70ceb58a19bacc3b1467de10b7a1fad2763db32b3f1330  linux-5.11.tar.xz
-3f44fcef90a0523bb017b27fe4ab86a01857d18155a8a7ea35428c82a392d2db29cb62357025aa0463fd67d9cc4b45c8b6234fc7f1e425e5e34a557232ae0d30  config-stable.x86_64
-56aeb7cc4dfbbe110eaa6491bc60d3827d33bf872948b2f75f351596155c8ef32bc69e870fac441415f93d6f894c95a4a39e0181a2d92ee4e68543ac3d16cc26  config-virt.x86_64
+3018b4cfb12f3b40e5b4edc33024fb12cea2fff5d870957d1fd089843e0d1e0be23efcb16729dfdb03d1203777421f322915eff25d4e045bb3d55253b2b053c0  config-stable.x86_64
+7143828b519d9b66215f6c413905f7ae88ccec065ac0eede4fd37f8dc54e729e780a3089d8ee88ab507984d28aeeda1bd136c1c4b321d2b4ef8268f023abfab7  config-virt.x86_64
 32a89fc1b755249c30a263193d638983c83808a7481380567ff08a0b84df01465501f4c664b8dd5b6f1cb2525a089a0a6f5cf2fb994ee5e250210aa9cda57ced  patch-5.11.2.xz"
