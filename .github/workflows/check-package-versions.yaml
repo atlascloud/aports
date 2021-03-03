@@ -1,7 +1,7 @@
 ---
 name: check package versions for upgrades
 
-'on':
+"on":
   push:
   schedule:
     - cron: "0 */12 * * *"
@@ -39,7 +39,7 @@ jobs:
               git branch -av
               # if the branch already exists, we can assume the original PR
               # already exists and just hasn't been merged yet
-              git branch -a | grep -q "package_bump/main/$pkg" && continue
+              git branch -a | grep -q "package_bump/main/$pkg-$latest_version" && continue
 
               echo "Changes found in main/$pkg. Updating checksum & committing."
               docker run --rm \
@@ -47,14 +47,14 @@ jobs:
                 --workdir /aports/main/$pkg \
                 alpine:edge sh -c "apk add abuild ; abuild -F checksum"
 
-              git checkout -b package_bump/main/$pkg
+              git checkout -b package_bump/main/$pkg-$latest_version
 
               git add main/$pkg
               git commit -m "main/$pkg: upgrade to $latest_version"
               # push any changes we may have committed
               # we do this here so each update package becomes it's own branch
               # which can then be PR'ed separately
-              git push origin package_bump/main/$pkg
+              git push origin package_bump/main/$pkg-$latest_version
               gh config set prompt disabled
               gh pr create --assignee iggy --fill
             fi
