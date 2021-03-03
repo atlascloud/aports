@@ -4,7 +4,7 @@
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 pkgname=ceph
 pkgver=15.2.9
-pkgrel=1
+pkgrel=0
 pkgdesc="Ceph is a distributed object store and file system"
 pkgusers="ceph"
 pkggroups="ceph"
