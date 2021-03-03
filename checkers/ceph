@@ -1,0 +1,21 @@
+#!/usr/bin/python3
+
+import requests
+from pkg_resources import parse_version
+
+highest_version = '0.0.0'
+
+r = requests.get('https://api.github.com/repos/ceph/ceph/tags')
+
+j = r.json()
+
+for t in j:
+    if t['name'].startswith('v'):
+        vers = t['name'].replace('v', '')
+        # in ceph land X.2.X versions are the current stable
+        if '.2.' not in vers:
+            continue
+        if parse_version(vers) > parse_version(highest_version):
+            highest_version = vers
+
+print(highest_version)

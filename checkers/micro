@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+
+import requests
+from pkg_resources import parse_version
+
+highest_version = '0.0.0'
+
+r = requests.get('https://api.github.com/repos/zyedidia/micro/tags')
+
+j = r.json()
+
+for t in j:
+    if t['name'].startswith('v'):
+        vers = t['name'].replace('v', '')
+        if parse_version(vers) > parse_version(highest_version):
+            highest_version = vers
+
+print(highest_version)
