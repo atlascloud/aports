@@ -3,9 +3,11 @@ LICENSE
 Dockerfile
 **/*.real
 .git/
+.cache/
 .ccache/
 .abuild/
 distfiles/
 apkcache/
+packages/
 src/
 tmp/
