@@ -1,7 +1,7 @@
 # Contributor: John Coyle <dx9err@gmail.com>
 # Maintainer: John Coyle <dx9err@gmail.com>
 pkgname=ceph
-pkgver=14.2.0
+pkgver=15.2.9
 pkgrel=0
 pkgdesc="Ceph is a distributed object store and file system"
 pkgusers="ceph"
@@ -444,6 +444,6 @@ _pkg() {
 	done
 }
 
-sha512sums="c86a335714fd5678988133ec0e60cb10cd948250a133c073d1ed055c5bba232fa6f1e102dd7fcb0c70b37a07c9c2d1220d4a1713720e4dcab9659152ee577480  ceph_14.2.0.orig.tar.gz
+sha512sums="1f55b0a13bf06df782831d0c9d5f8617c22442ab97fb186e6ccb08183e02bf1756caf8633fa6b1cf156c3fb7b1bdff90a60a1249adfad0b9450036e2329bf8ff  ceph_15.2.9.orig.tar.gz
 e1becd813ed3f28e2e4a6bef78b3b5117c1c0bb9cabe0ba9c912e0a20b551b6b2667495cddb94acd64192e287144911ff1c11e0d636fe04cc458146cfb0daca8  allperms.patch
 35722b11ad52a3145153635b6a96abda2a23ae9c7e63e2eac006c1e5b8014452c4a1a11bbe0292fd731e4c43aa38e27dd75d2ff9d25bcf52290278f71e868570  musl-fixes.patch"
