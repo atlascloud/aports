@@ -3,7 +3,7 @@
 
 _flavor=stable
 pkgname=linux-${_flavor}
-pkgver=5.11.9
+pkgver=5.11.10
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
@@ -213,4 +213,4 @@ _dev() {
 sha512sums="a567ec133018bb5ec00c60281479b466c26e02137a93a9c690e83997947df02b6fd94e76e8df748f6d70ceb58a19bacc3b1467de10b7a1fad2763db32b3f1330  linux-5.11.tar.xz
 b4d4f69d1298e0948596be891208a5fdb667e2995dabdcf8bc87815f7fd0cc5eb831fd48f5d346bb4a8acbbe3c9f472da8e0f496ad97c15831e40760426e44b6  config-stable.x86_64
 66d7ae2278c599bb2acea3cb357b8f70784d029de3a1634bdd91b68e8b7d4e57fe8dee8f570cd1158c75a0d7d2f8c72a3e17a4fd3137a11c1e5cbbaf8ff4aa93  config-virt.x86_64
-030a7addaa74b3144c0248d736e977b7d5656591f09565f9eba29c7b620be564c9c48c140cc1afe904e629ef7b6b162d17ca2abe3ff4ce569c2d40d12bc5f092  patch-5.11.9.xz"
+5c7a3dc972169363feab6f007af1105a9fb0ad52dbca2cb9d7546ab8bccee28f8faceb443a154a6349b2329400e264e91153d01685e48604dd9cb967eab04e1f  patch-5.11.10.xz"
