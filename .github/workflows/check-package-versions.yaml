@@ -50,7 +50,9 @@ jobs:
               git checkout -b package_bump/main/$pkg-$latest_version
 
               git add main/$pkg
-              git commit -m "main/$pkg: upgrade to $latest_version"
+              git commit -m "main/$pkg: upgrade to $latest_version
+
+              Automated package bump"
               # push any changes we may have committed
               # we do this here so each update package becomes it's own branch
               # which can then be PR'ed separately
