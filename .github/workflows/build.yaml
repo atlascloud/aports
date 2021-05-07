@@ -8,7 +8,7 @@ name: build packages
 
 jobs:
   build:
-    runs-on: [ubuntu-20.04, self-hosted]
+    runs-on: [Linux, X64, self-hosted]
 
     strategy:
       matrix:
