@@ -3,7 +3,7 @@
 # Contributor: Duncan Bellamy <dunk@denkimushi.com>
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 pkgname=ceph
-pkgver=16.2.4
+pkgver=16.2.5
 pkgrel=0
 pkgdesc="Ceph is a distributed object store and file system"
 pkgusers="ceph"
@@ -544,7 +544,7 @@ _pkg() {
 }
 
 sha512sums="
-8904e7fcabd50276e4e86735fd85dba96f417c194c219025146f994707def7abe372528b0f2e862e274b2f405d7b791bac86b6cbb8d57cecd6f44023a2ffb6f6  ceph_16.2.4.orig.tar.gz
+5c32f9aa817ecfa788725bcfe5743756853ca9b3f9ee453242110f1b5e1bdd1feaef79ad9ccf2b185445c9644bcecb1355e151a2255bfd27edc9818e0d6d4c4a  ceph_16.2.5.orig.tar.gz
 110bdbcb40216c7ed155a8d23020784741b4992d895f4f04a146d275506e4e68053854d3b063b41e9c9b3e3e4f95b6b90602f92c185c853c0d8f47ad0c6b7121  ceph.confd
 ce5f162501f6b67fe254546dddf880d1a5b1d1a0fa69e0b1918de17e8da45c5c6124512b8cbd98b76f29d931403de0d11c5ffd330ed8ee1f4dc75bb04baecae3  ceph.initd
 c608f11cf358d76daf5281467a4ea941a81474fbe7f5faa41f7f4d0abaf9136a01576bbb1ab24bdd7bc91a49f66bd7f0a84717de5ec27250d74dd1e47e3b5dd3  10-musl-fixes.patch
