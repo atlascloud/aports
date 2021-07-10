@@ -1,12 +1,16 @@
-submitted as https://github.com/ceph/ceph/pull/40583
+submitted as:
+https://github.com/ceph/ceph/pull/41470
 
---- a/src/tools/cephfs_mirror/PeerReplayer.cc
-+++ b/src/tools/cephfs_mirror/PeerReplayer.cc
-@@ -5,6 +5,7 @@
- #include <fcntl.h>
- #include <algorithm>
- #include <sys/time.h>
-+#include <sys/file.h>
+diff --git a/src/rgw/rgw_string.h b/src/rgw/rgw_string.h
+index 257daa9c1..90e64f98a 100644
+--- a/src/rgw/rgw_string.h
++++ b/src/rgw/rgw_string.h
+@@ -8,6 +8,8 @@
+ #include <stdlib.h>
+ #include <limits.h>
+ #include <string_view>
++#include <string>
++#include <stdexcept>
  
- #include "common/admin_socket.h"
- #include "common/ceph_context.h"
+ #include <boost/container/small_vector.hpp>
+ 
