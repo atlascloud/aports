@@ -20,6 +20,10 @@ source="https://www.nlnetlabs.nl/downloads/nsd/nsd-$pkgver.tar.gz
 	config.patch
 	"
 
+# secfixes:
+#   4.3.4-r0:
+#     - CVE-2020-28935
+
 build() {
 	./configure \
 		--build=$CBUILD \
@@ -31,7 +35,8 @@ build() {
 		--with-xfrdir=/var/db/nsd \
 		--enable-ratelimit \
 		--enable-ratelimit-default-is-off \
-		--enable-zone-stats
+		--enable-zone-stats \
+		--enable-root-server
 	make
 }
 
@@ -50,12 +55,13 @@ package() {
 }
 
 check() {
-  # this doesn't actually do anything right now, but maybe someday
+	# this doesn't actually do anything right now, but maybe someday
 	make test
 }
+
 
 sha512sums="
 ef5fbcbeccba7e90cc7eed32c6a6f61f5471e13bfb74e5dd072cc9be7af67ebf97c93c0902e115efeda89489399e0543566a6847788ea7bebf13b9007f2c6193  nsd-4.3.7.tar.gz
 bc2b27d98b99db067c7c4b152ee40ae81b8ee66989f873ca0c21f57333c3734bb342866f68d5837f10bb56cb598fafc794095c02b8bc97ef6dace450cae526a6  nsd.initd
-7910452d9851218fdaf79a5ef3f3784fd3707088afb04c96c0fd6702ad29d2e77fddbc1eb2805700e86770797b14d728fd87046a78aa203a1eb692fced1689d0  config.patch
+5b192f2151114d1853fb17f89324d9cc7ec16aa4d057c4f86b81ce8385b69eeb128df737e12597705c2acd33cdfd5857ed3234e4be153a36ba1dcf4175232701  config.patch
 "

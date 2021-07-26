@@ -1,1 +1,6 @@
-nsd.pre-install
+#!/bin/sh
+
+addgroup -S nsd 2>/dev/null
+adduser -S -H -h /var/db/nsd -s /sbin/nologin -G nsd -g nsd nsd 2>/dev/null
+
+exit 0
