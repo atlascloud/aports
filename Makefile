@@ -16,7 +16,7 @@ build:
 		-v $(PWD)/apkcache:/etc/apk/cache \
 		-v $(PWD)/distfiles:/var/cache/distfiles \
 		--name ceph-builder \
-		atlascloud/ceph-builder
+		ghcr.io/atlascloud/aports-builder:edge
 
 		# /bin/sh -c "pwd ; sudo chown -R build:build /var/cache/distfiles /home/build/.ccache ; echo abuild -r ; sh"
 
@@ -31,4 +31,4 @@ build_shell:
 		--name ceph-builder \
 		--entrypoint /bin/sh \
 		--env-file .env \
-		atlascloud/ceph-builder
+		ghcr.io/atlascloud/aports-builder:edge
