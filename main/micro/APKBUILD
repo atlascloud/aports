@@ -2,40 +2,35 @@
 # Maintainer: Justin Berthault <justin.berthault@zaclys.net>
 pkgname=micro
 pkgver=2.0.11
-pkgrel=0
+pkgrel=2
 # This will need to be updated along with version as it cannot currently be
 # obtained from the tarball, and is necessary if the user is to make error
 # reports upsteam.
-_commithash=cfcb2e4577fe00e744d5684c0871fd8ce849930c
+_commithash=225927b9a25f0d50ea63ea18bc7bb68e404c0cfd
 pkgdesc="A modern and intuitive terminal-based text editor"
 url="https://micro-editor.github.io/"
 options="!check chmod-clean"
-arch="all !mips !mips64" # go is missing
+arch="all"
 license="MIT"
 makedepends="go"
 subpackages="$pkgname-doc"
 source="micro-$pkgver.tar.gz::https://github.com/zyedidia/micro/archive/v$pkgver.tar.gz"
-builddir="$srcdir/src/github.com/zyedidia/$pkgname"
 
-prepare() {
-	mkdir -p ${builddir%/*}
-	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
-	default_prepare
-}
+export GOCACHE="$srcdir/go-cache"
+export GOTMPDIR="$srcdir"
+export GOMODCACHE="$srcdir/go"
 
 build() {
-	export GOPATH="$srcdir"
-	go get -v -ldflags "
-		-s -w
+	go generate ./runtime
+	go build -o micro -ldflags "
 		-X github.com/zyedidia/micro/v2/internal/util.Version=$pkgver-$pkgrel
 		-X github.com/zyedidia/micro/v2/internal/util.CommitHash=$_commithash
 		-X github.com/zyedidia/micro/v2/internal/util.CompileDate=$SOURCE_DATE_EPOCH
-		" \
-		./cmd/micro
+		" ./cmd/micro
 }
 
 package() {
-	install -Dm755 "$srcdir"/bin/$pkgname "$pkgdir"/usr/bin/$pkgname
+	install -Dm755 micro -t "$pkgdir"/usr/bin
 	install -Dm644 "$builddir"/assets/packaging/micro.1 -t "$pkgdir"/usr/share/man/man1
 	install -Dm644 "$builddir"/assets/packaging/micro.desktop -t "$pkgdir"/usr/share/applications
 	install -Dm644 "$builddir"/assets/micro-logo.svg "$pkgdir"/usr/share/pixmaps/micro.svg
