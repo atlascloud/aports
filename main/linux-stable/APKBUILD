@@ -3,7 +3,7 @@
 
 _flavor=stable
 pkgname=linux-${_flavor}
-pkgver=6.0.2
+pkgver=6.0.3
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
@@ -214,5 +214,5 @@ sha512sums="
 bac41a7aeb6e809616cee2f13dcd1c45e829dfd1ccf60aee1dc4c46b1e28532f4485c7d819a32940de84fdfbf89db80a4e919bce8a74b2948c5a01551771b714  linux-6.0.tar.xz
 0fee4fb4b79d4308c9062d727eca7dd87576d4fcc4569b825f6b774214ca4989c2efb050ef42407bbd60e4251a086a9f2ad2483b103ab430d8991326caa5f68a  config-stable.x86_64
 3f6bd1682f36ff4e9813222b505b4313d08ad84c6a531d30b7b52cdfbdc39f92120213da6dd28e0a5b30d48f0caa03374269f1ae91ffb081de25ab9dd504f859  config-virt.x86_64
-10b2c1af9cbf2335a1b449de3ee674c68ae2ae1ac4bdc27b6e7692c5152fb3cd096388044c0e0ee6054b106d6eface9af41d746adf8f8264d738e9c8f73a3784  patch-6.0.2.xz
+fb819870e62e823bc7b91fad83baf2c8481859837e861e1db241d017b9d5f1121df4bb892edce35c0c5653252fbaca7b9c1c0eaacda30063523c608a839afd51  patch-6.0.3.xz
 "
