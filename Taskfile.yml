@@ -1,0 +1,119 @@
+---
+version: 3
+
+dotenv: [".env"]
+
+# vars:
+#   FOO: bar
+
+# env
+
+tasks:
+  docker:build:
+    cmds:
+      - docker build --pull --tag ghcr.io/atlascloud/aports-builder:edge .
+
+  docker:push:
+    cmds:
+      - docker push ghcr.io/atlascloud/aports-builder:edge
+
+  docker:run:
+    cmds:
+      - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
+      - docker run -it --rm
+        --env-file .env
+        -v ${PWD}:/home/build
+        -v ${PWD}/apkcache:/etc/apk/cache
+        -v ${PWD}/distfiles:/var/cache/distfiles
+        --name aports-builder ghcr.io/atlascloud/aports-builder:edge
+
+  docker:runshell:
+    cmds:
+      - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
+      - docker run -it --rm
+        --env-file .env
+        -v ${PWD}:/home/build
+        -v ${PWD}/apkcache:/etc/apk/cache
+        -v ${PWD}/distfiles:/var/cache/distfiles
+        --entrypoint /bin/sh
+        --name aports-builder ghcr.io/atlascloud/aports-builder:edge
+
+  docker:checksum:
+    cmds:
+      - docker run --rm
+        -v ${PWD}:/aports
+        -v ${PWD}/apkcache:/etc/apk/cache
+        -v ${PWD}/distfiles:/var/cache/distfiles
+        --workdir /aports/{{ .PKG }}
+        alpine:edge sh -c "apk add abuild ; abuild -F checksum"
+
+  docker:super-linter:
+    cmds:
+      - docker run
+        -e RUN_LOCAL=true
+        -e ACTIONS_RUNNER_DEBUG=false
+        -e FILTER_REGEX_EXCLUDE='/tmp/lint/(.abuild|.cacche|.git|apkcache|distfiles|src|tmp)'
+        -v ${PWD}:/tmp/lint
+        github/super-linter
+
+  docker:test:
+    cmds:
+      - docker run
+        --workdir /src
+        -v ${PWD}:/src
+        alpine:edge
+        /bin/sh -c "wget -O /tmp/int.sh https://taskfile.dev/install.sh ; sh /tmp/int.sh -d -b /bin ; /bin/task test"
+
+  test:
+    vars:
+      ABS:
+        sh: find . -name APKBUILD
+    cmds:
+      - apk add abuild atools
+      - cmd: |
+          {{range $i, $APKBUILD := .ABS | splitLines -}}
+            cd {{$APKBUILD | dir}}
+            abuild -F sanitycheck
+            apkbuild-lint APKBUILD
+            cd /src
+          {{end}}
+        ignore_errors: true
+
+  upload-package:
+    # vars:
+    #   PKG: should be set on command line
+    cmds:
+      - |
+        {{ $SL := splitList "/" .PKG -}}
+        {{ $repo := slice $SL 2 3 | first -}}
+        {{ $vers := slice $SL 1 2 | first -}}
+        curl -v \
+          -H "Authorization: Bearer $PKGS_TOKEN" \
+          -F "architecture=x86_64;type=text/plain" \
+          -F "package=@{{ .PKG }}" \
+          https://packages.atlascloud.xyz/api/o/atlascloud/r/{{ $repo }}/v/{{ $vers }}
+
+  check-pkg-version:
+    cmds:
+      - |
+        pkg={{ .PKG | splitList "/" | last }}
+        echo "checking $pkg"
+        [ -f "./checkers/$pkg" ] || exit 0 # if we don't have a checker, skip
+
+        latest_version=$(./checkers/$pkg)
+        echo "latest version: $latest_version"
+        sed -i "s:pkgver=.*:pkgver=$latest_version:" main/$pkg/APKBUILD
+        sed -i "s:pkgrel=.*:pkgrel=0:" main/$pkg/APKBUILD
+
+  check-pkg-versions:
+    vars:
+      ABS:
+        sh: find . -name APKBUILD
+    cmds:
+      # loop over all of the apkbuild files and run check_pkg_version
+      # for that pkg name
+      # {{range $i, $APKBUILD := .ABS | splitLines -}}
+      # - task: check-pkg-version
+      #   vars:
+      #     PKG: "{{$APKBUILD | dir | base}}"
+      # {{end}}

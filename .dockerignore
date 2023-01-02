@@ -10,4 +10,5 @@ distfiles/
 apkcache/
 packages/
 src/
+**/src/
 tmp/

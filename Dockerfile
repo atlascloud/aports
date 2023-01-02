@@ -3,6 +3,8 @@
 # some dependencies are only in edge, TODO build for stable releases later too
 FROM alpine:edge
 
+LABEL org.opencontainers.image.source "https://github.com/atlascloud/aports"
+
 # RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 
 # This is a container for building other software, it doesn't need pinned packages/etc
@@ -10,7 +12,7 @@ FROM alpine:edge
 # hadolint ignore=DL3017,DL3018,DL3019
 RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo
 # hadolint ignore=DL3017,DL3018,DL3019
-RUN apk upgrade -s
+RUN apk upgrade
 
 # Do all the build stuff that abuild requires
 # https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package
