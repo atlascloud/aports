@@ -39,7 +39,7 @@ changed_abuilds() {
 set_repositories_for() {
 	local target_repo="$1"
 
-	local repo; for repo in main community testing; do
+	local repo; for repo in main community ; do # testing
 		echo "Adding $MIRROR_URI/$repo to /etc/apk/repositories"
 		echo "$MIRROR_URI/$repo" | sudo tee -a /etc/apk/repositories
 		[ "$repo" = "$target_repo" ] && break
@@ -62,7 +62,7 @@ echo 'Diffstat:'
 git --no-pager diff --color --stat "$commit_range"
 
 # shellcheck disable=SC2043
-for repo in main; do
+for repo in znver1 main; do
 	set_repositories_for "$repo"
 
 	oIFS=$IFS
