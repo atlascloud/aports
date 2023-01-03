@@ -10,14 +10,17 @@ dotenv: [".env"]
 
 tasks:
   docker:build:
+    desc: build docker builder image
     cmds:
       - docker build --pull --tag ghcr.io/atlascloud/aports-builder:edge .
 
   docker:push:
+    desc: push builder image to github packages
     cmds:
       - docker push ghcr.io/atlascloud/aports-builder:edge
 
   docker:run:
+    desc: run the builder image
     cmds:
       - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
       - docker run -it --rm
@@ -28,6 +31,7 @@ tasks:
         --name aports-builder ghcr.io/atlascloud/aports-builder:edge
 
   docker:runshell:
+    desc: run a shell in the builder image (useful for debugging)
     cmds:
       - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
       - docker run -it --rm
@@ -39,6 +43,7 @@ tasks:
         --name aports-builder ghcr.io/atlascloud/aports-builder:edge
 
   docker:checksum:
+    desc: generate checksums for a package, must specify 'PKG'
     cmds:
       - docker run --rm
         -v ${PWD}:/aports
@@ -48,6 +53,7 @@ tasks:
         alpine:edge sh -c "apk add abuild ; abuild -F checksum"
 
   docker:super-linter:
+    desc: run super linter - should switch to megalinter
     cmds:
       - docker run
         -e RUN_LOCAL=true
@@ -57,6 +63,7 @@ tasks:
         github/super-linter
 
   docker:test:
+    desc: run tests in docker
     cmds:
       - docker run
         --workdir /src
@@ -65,6 +72,7 @@ tasks:
         /bin/sh -c "wget -O /tmp/int.sh https://taskfile.dev/install.sh ; sh /tmp/int.sh -d -b /bin ; /bin/task test"
 
   test:
+    desc: run tests
     vars:
       ABS:
         sh: find . -name APKBUILD
@@ -80,6 +88,7 @@ tasks:
         ignore_errors: true
 
   upload-package:
+    desc: upload a package to packages server
     # vars:
     #   PKG: should be set on command line
     cmds:
@@ -94,6 +103,7 @@ tasks:
           https://packages.atlascloud.xyz/api/o/atlascloud/r/{{ $repo }}/v/{{ $vers }}
 
   check-pkg-version:
+    desc: run checker scripts
     cmds:
       - |
         pkg={{ .PKG | splitList "/" | last }}

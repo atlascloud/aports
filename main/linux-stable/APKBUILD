@@ -22,7 +22,7 @@ source="https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/linux-$_kernver
 	config-stable.x86_64
 	config-virt.x86_64
 	"
-subpackages="$pkgname-dev:_dev:$CBUILD_ARCH"
+subpackages="$pkgname-dev:_dev:$CBUILD_ARCH $pkgname-doc"
 _flavors=
 for _i in $source; do
 	case $_i in
@@ -150,6 +150,20 @@ package() {
 	depends="$depends linux-firmware-any"
 
 	_package stable "$pkgdir"
+
+	# copy files for -doc sub package
+	mkdir -p "$pkgdir"/usr/share/doc
+	cp -r "$srcdir"/linux-"$_kernver"/Documentation \
+		"$pkgdir"/usr/share/doc/linux-doc-"$pkgver"/
+	# remove files that aren't part of the documentation itself
+	for nondoc in \
+		.gitignore conf.py docutils.conf \
+		dontdiff Kconfig Makefile
+	do
+		rm "$pkgdir"/usr/share/doc/linux-doc-"$pkgver"/"$nondoc"
+	done
+	# create /usr/share/doc/linux-doc symlink
+	cd "$pkgdir"/usr/share/doc; ln -s linux-doc-"$pkgver" linux-doc
 }
 
 # subflavors install in $subpkgdir
@@ -159,6 +173,7 @@ virt() {
 
 _dev() {
 	local _flavor=$(echo $subpkgname | sed -E 's/(^linux-|-dev$)//g')
+	local _builddir="$srcdir"/build-$_flavor.$CARCH
 	local _abi_release=${pkgver}-${pkgrel}-$_flavor
 	# copy the only the parts that we really need for build 3rd party
 	# kernel modules and install those as /usr/src/linux-headers,
@@ -175,11 +190,15 @@ _dev() {
 	# first we import config, run prepare to set up for building
 	# external modules, and create the scripts
 	mkdir -p "$dir"
-	cp "$srcdir"/config-$_flavor.${CARCH} "$dir"/.config
+	cp -a "$_builddir"/.config "$_builddir"/localversion-alpine \
+		"$dir"/
 	echo "-$pkgrel-$_flavor" > "$dir"/localversion-alpine
 
-	make -j1 -C "$srcdir"/linux-$_kernver O="$dir" ARCH="$_carch" \
-		syncconfig prepare modules_prepare scripts
+	make -j1 -C "$srcdir"/linux-$_kernver \
+		O="$dir" \
+		ARCH="$_carch" \
+		AWK="${AWK:-mawk}" \
+		prepare modules_prepare scripts
 
 	# remove the stuff that points to real sources. we want 3rd party
 	# modules to believe this is the soruces
@@ -208,7 +227,6 @@ _dev() {
 	ln -sf /usr/src/linux-headers-${_abi_release} \
 		"$subpkgdir"/lib/modules/${_abi_release}/build
 }
-
 
 sha512sums="
 6ed2a73c2699d0810e54753715635736fc370288ad5ce95c594f2379959b0e418665cd71bc512a0273fe226fe90074d8b10d14c209080a6466498417a4fdda68  linux-6.1.tar.xz
