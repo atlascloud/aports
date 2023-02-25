@@ -10,7 +10,9 @@ jobs:
   check-package-updates:
     runs-on: ubuntu-22.04
     steps:
-      - uses: Arduino/actions/setup-taskfile@master
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
       - uses: actions/checkout@v3
         with:
           # We use this specific token to push because the default token
