@@ -4,7 +4,7 @@
 # Contributor: Iggy Jackson <iggy@theiggy.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=nsd
-pkgver=4.7.0
+pkgver=4.9.0
 pkgrel=0
 pkgdesc="Authoritative only, high performance and simple DNS server"
 url="https://www.nlnetlabs.nl/projects/nsd"
@@ -61,7 +61,7 @@ check() {
 
 
 sha512sums="
-387e66993517c015ea49fc7a985c1f746623ae30a82bd01f224efbdb7c58d1d2f3e5a5a3574203959047876c632ec464b6682d1644f0e0f157ec0e6fb3f0cdbb  nsd-4.7.0.tar.gz
+3731c84b6cd5e3821a9a228ac4283820ff395e318763121cbdcc4e0c4e1e5023756b55b318769063a76e9a64aa2adc98bd5f7ea62ec9f586e638ba9f3b9c6a77  nsd-4.9.0.tar.gz
 bc2b27d98b99db067c7c4b152ee40ae81b8ee66989f873ca0c21f57333c3734bb342866f68d5837f10bb56cb598fafc794095c02b8bc97ef6dace450cae526a6  nsd.initd
 5b192f2151114d1853fb17f89324d9cc7ec16aa4d057c4f86b81ce8385b69eeb128df737e12597705c2acd33cdfd5857ed3234e4be153a36ba1dcf4175232701  config.patch
 "
