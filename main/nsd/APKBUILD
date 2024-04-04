@@ -5,20 +5,22 @@
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=nsd
 pkgver=4.9.0
-pkgrel=0
+pkgrel=1
 pkgdesc="Authoritative only, high performance and simple DNS server"
 url="https://www.nlnetlabs.nl/projects/nsd"
 arch="all"
 license="BSD-3-Clause"
-makedepends="openssl-dev libevent-dev"
+makedepends="openssl-dev>3 libevent-dev"
 install="$pkgname.pre-install $pkgname.pre-upgrade"
-subpackages="$pkgname-doc $pkgname-dbg $pkgname-openrc"
+subpackages="$pkgname-doc $pkgname-dbg $pkgname-openrc $pkgname-bash-completion"
 pkgusers="nsd"
 pkggroups="nsd"
 source="https://www.nlnetlabs.nl/downloads/nsd/nsd-$pkgver.tar.gz
 	nsd.initd
 	config.patch
+	tsig-openssl.patch
 	"
+options="!check"
 
 # secfixes:
 #   4.3.4-r0:
@@ -35,8 +37,6 @@ build() {
 		--with-xfrdir=/var/db/nsd \
 		--enable-ratelimit \
 		--enable-ratelimit-default-is-off \
-		--enable-zone-stats \
-		--enable-root-server
 	make
 }
 
@@ -49,19 +49,19 @@ package() {
 	install -d "$pkgdir"/usr/share/doc/$pkgname
 	cp -a "$builddir"/doc/* "$builddir"/contrib \
 		"$pkgdir"/usr/share/doc/$pkgname/
+	rm "$pkgdir"/usr/share/doc/nsd/contrib/nsd.service
+
+	mkdir -p "$pkgdir"/usr/share/bash-completion/completions
+	mv "$pkgdir"/usr/share/doc/nsd/contrib/autocomplete_nsd-control.bash \
+		"$pkgdir"/usr/share/bash-completion/completions/nsd-control
 
 	install -d -m 755 -o nsd -g nsd "$pkgdir"/var/db/nsd
 	rm -fr "$pkgdir"/run
 }
 
-check() {
-	# this doesn't actually do anything right now, but maybe someday
-	make test
-}
-
-
 sha512sums="
 3731c84b6cd5e3821a9a228ac4283820ff395e318763121cbdcc4e0c4e1e5023756b55b318769063a76e9a64aa2adc98bd5f7ea62ec9f586e638ba9f3b9c6a77  nsd-4.9.0.tar.gz
 bc2b27d98b99db067c7c4b152ee40ae81b8ee66989f873ca0c21f57333c3734bb342866f68d5837f10bb56cb598fafc794095c02b8bc97ef6dace450cae526a6  nsd.initd
 5b192f2151114d1853fb17f89324d9cc7ec16aa4d057c4f86b81ce8385b69eeb128df737e12597705c2acd33cdfd5857ed3234e4be153a36ba1dcf4175232701  config.patch
+3a9085320ceb4b63d2cada23f730f515b306d641c782a0b1b0b9c4cef0e473f5e6accbce8bbbfdb2ce0275adb947f5705aa3e0f1e4809775e2910173456b7e5b  tsig-openssl.patch
 "
