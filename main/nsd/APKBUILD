@@ -4,8 +4,8 @@
 # Contributor: Iggy Jackson <iggy@theiggy.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=nsd
-pkgver=4.9.0
-pkgrel=1
+pkgver=4.9.1
+pkgrel=0
 pkgdesc="Authoritative only, high performance and simple DNS server"
 url="https://www.nlnetlabs.nl/projects/nsd"
 arch="all"

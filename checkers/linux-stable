@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # return the latest stable kernel version
 

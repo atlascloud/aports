@@ -4,15 +4,15 @@ set -x
 
 if ! git config user.name ; then
     # some configuration in case we push any changes
-    git config user.name github-actions
-    git config user.email github-actions@github.com
-    # git config
+    git config --global user.name github-actions
+    git config --global user.email github-actions@github.com
+    git config --global core.pager ''
 fi
 
 # check each packages latest version, update the APKBUILD and commit if any changes
-for pkg in $( cd main && find . -maxdepth 1 -mindepth 1 -type d -printf '%P\n'); do
+for pkg in $( cd main && find . -maxdepth 1 -mindepth 1 -type d -exec basename {} \;); do
     echo "checking $pkg"
-    [ -f "./checkers/$pkg" ] || exit 0 # if we don't have a checker, skip
+    [ -f "./checkers/$pkg" ] || continue # if we don't have a checker, skip
 
     latest_version=$(./checkers/"$pkg")
     echo "latest version: $latest_version"
