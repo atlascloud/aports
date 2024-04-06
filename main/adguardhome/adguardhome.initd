@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+
+name="AdGuardHome"
+description="Network-wide ads & trackers blocking DNS server"
+
+: ${adguard_opts:="--no-check-update --config /etc/adguardhome/adguardhome.yaml --work-dir /var/lib/adguardhome --logfile syslog"}
+
+command=/usr/sbin/adguardhome
+command_args="$adguard_opts"
+command_user=adguard:adguard
+
+depend() {
+	need net localmount
+	after firewall
+}
