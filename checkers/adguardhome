@@ -1,0 +1,5 @@
+#!/usr/bin/python3
+
+from utils import get_latest_gh_tag
+
+print(get_latest_gh_tag('adguardteam/adguardhome', filter_not='-b.'))
