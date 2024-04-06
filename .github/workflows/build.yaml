@@ -53,7 +53,6 @@ jobs:
             echo "Uploading $apk to packages.atlascloud.xyz"
             curl -sSL \
               -H 'Authorization: Bearer ${{ secrets.PACKAGES_TOKEN }}' \
-              -F "architecture=x86_64;type=text/plain" \
               -F "package=@${apk}" \
               https://packages.atlascloud.xyz/api/atlascloud/alpine/${{ matrix.release }}/main/x86_64/pkgs
           done
