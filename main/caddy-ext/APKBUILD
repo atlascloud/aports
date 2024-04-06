@@ -1,0 +1,54 @@
+# Maintainer: Iggy Jackson <iggy@iggy.ninja>
+pkgname=caddy-ext
+pkgver=2.7.6
+pkgrel=1
+pkgdesc="Fast, multi-platform web server with automatic HTTPS with extensions"
+url="https://caddyserver.com/"
+options="!check chmod-clean net setcap"
+arch="all"
+license="Apache-2.0"
+depends="ca-certificates"
+makedepends="go libcap-setcap"
+subpackages="$pkgname-openrc"
+pkgusers="caddy"
+pkggroups="caddy"
+install="$pkgname.pre-install"
+source="$pkgname.initd
+        Caddyfile
+        "
+
+export CGO_ENABLED="0"
+# export GOCACHE="$srcdir/go-cache"
+# export GOTMPDIR="$srcdir"
+# export GOMODCACHE="$srcdir/go"
+export GOAMD64="v3"
+
+build() {
+        # FIXME we shouldn't install this here, maybe a separate package that we can makedep on
+        # we also should probably pin an xcaddy version
+        go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+        ~/go/bin/xcaddy build v$pkgver \
+              --output bin/$pkgname \
+              --with github.com/mholt/caddy-l4/layer4 \
+              --with github.com/mholt/caddy-l4/modules/l4proxy \
+              --with github.com/caddyserver/jsonc-adapter \
+              --with github.com/caddy-dns/digitalocean \
+              --with github.com/greenpau/caddy-security \
+              --with github.com/chukmunnlee/caddy-openapi \
+              --with github.com/muety/caddy-pirsch-plugin \
+              --with github.com/muety/caddy-remote-host
+}
+
+package() {
+        install -Dm755 "$srcdir"/bin/$pkgname -t "$pkgdir"/usr/sbin
+        setcap cap_net_bind_service=+ep "$pkgdir"/usr/sbin/$pkgname
+
+        install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+        install -Dm644 "$srcdir"/Caddyfile "$pkgdir"/etc/$pkgname/Caddyfile
+        # TODO install -Dm755 "$pkgdir"/var/log/caddy and chown
+}
+
+sha512sums="
+bce40a33dc823caf8fd2af287dd7c1600fbdae2d39eebf918d8756114fe86ff4750c55100e485437c1b68d3ce552dac5353eb18c2119ff361824dc5149082760  caddy-ext.initd
+d3110dd79f7d5e602a34d42569104dc97603994e42daf5f6b105303a3d034b52b91ef5fb156d5bf7b7a3a58ec0aeff58afc402618d0555af053771952a866f76  Caddyfile
+"
