@@ -56,3 +56,7 @@ jobs:
               -F "package=@${apk}" \
               https://packages.atlascloud.xyz/api/atlascloud/alpine/${{ matrix.release }}/main/x86_64/pkgs
           done
+          curl -sSL \
+              -H 'Authorization: Bearer ${{ secrets.PACKAGES_TOKEN }}' \
+              -X POST \
+              https://packages.atlascloud.xyz/api/atlascloud/alpine/${{ matrix.release }}/main/x86_64/index
