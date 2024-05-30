@@ -1,7 +1,7 @@
 # Maintainer: Iggy Jackson <iggy@iggy.ninja>
 pkgname=caddy-ext
-pkgver=2.7.6
-pkgrel=1
+pkgver=2.8.1
+pkgrel=0
 pkgdesc="Fast, multi-platform web server with automatic HTTPS with extensions"
 url="https://caddyserver.com/"
 options="!check chmod-clean net setcap"
