@@ -1,7 +1,7 @@
 # Maintainer: Iggy Jackson <iggy@iggy.ninja>
 pkgname=caddy-ext
-pkgver=2.7.6
-pkgrel=1
+pkgver=2.8.4
+pkgrel=0
 pkgdesc="Fast, multi-platform web server with automatic HTTPS with extensions"
 url="https://caddyserver.com/"
 options="!check chmod-clean net setcap"
@@ -40,10 +40,10 @@ build() {
 }
 
 package() {
-        install -Dm755 "$srcdir"/bin/$pkgname -t "$pkgdir"/usr/sbin
+        install -Dm750 -g$pkggroups "$srcdir"/bin/$pkgname -t "$pkgdir"/usr/sbin
         setcap cap_net_bind_service=+ep "$pkgdir"/usr/sbin/$pkgname
 
-        install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+        install -Dm744 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
         install -Dm644 "$srcdir"/Caddyfile "$pkgdir"/etc/$pkgname/Caddyfile
         # TODO install -Dm755 "$pkgdir"/var/log/caddy and chown
 }
