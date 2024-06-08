@@ -9,13 +9,13 @@ case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
 esac
-pkgrel=0
+pkgrel=1
 pkgdesc="Linux latest stable kernel"
 url="https://www.kernel.org"
 depends="initramfs-generator"
 _depends_dev="perl gmp-dev elfutils-dev flex bison mpc1-dev mpfr-dev zstd bash"
 makedepends="$_depends_dev sed installkernel bc linux-headers linux-firmware-any
-	openssl-dev diffutils findutils xz pahole python3 mawk"
+	openssl-dev diffutils findutils xz pahole python3 mawk musl-dev"
 options="!strip !check" # no tests
 _config=${config:-config-stable.${CARCH}}
 install=
