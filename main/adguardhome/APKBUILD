@@ -1,6 +1,6 @@
 # Maintainer: Iggy Jackson <iggy@iggy.ninja>
 pkgname=adguardhome
-pkgver=0.107.49
+pkgver=0.107.52
 pkgrel=0
 pkgdesc="Network-wide ads & trackers blocking DNS server"
 url="https://adguard.com/adguard-home.html"
@@ -49,5 +49,5 @@ package() {
 
 sha512sums="
 a2c616dcec8b77fbf30e8e48dd5c84de887f7d2bfef75d229425d72dd5a4625c1f1bcdc6803f57f9439b9bbf4f92854d8a7cdcc815891292a31fd82d5866a784  adguardhome.initd
-20e5c528a00d87658be90d7320972b44db10e1537d5a836d83dadf772c4f54754272e69bc2565163e5847375fd4d9a0159f7ef9eb552beadee2432330729b373  adguardhome-0.107.49.tar.gz
+92e0524721777ca5145a052e31fc08c91d8633996f689d9a8fb0d1a3bc4da18c326369b52c93bc0bb3907835c8442f15b08ff9d85e073df66dd9a4bebf4d316d  adguardhome-0.107.52.tar.gz
 "
