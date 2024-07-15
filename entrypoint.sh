@@ -20,7 +20,7 @@ changed_abuilds() {
 	# Get names of repo's subdirectories with modified APKBUILD,
 	# but ignore deleted ones.
 	local committed_aports="$(git diff-tree -r --relative="$repo" --name-only --diff-filter=ACMR \
-					"$commit_ish" -- '*APKBUILD' | xargs -I% dirname % | xargs)"
+		"$commit_ish" -- '*APKBUILD' | xargs -I% dirname % | xargs)"
 	local uncommitted_aports="$(git status -s -u -- "${repo}"/*APKBUILD | xargs -I% dirname % | cut -f2 -d/)"
 
 	# remove duplicates from the lists
@@ -39,7 +39,8 @@ changed_abuilds() {
 set_repositories_for() {
 	local target_repo="$1"
 
-	local repo; for repo in main community ; do # testing
+	local repo
+	for repo in main community; do # testing
 		echo "Adding $MIRROR_URI/$repo to /etc/apk/repositories"
 		echo "$MIRROR_URI/$repo" | sudo tee -a /etc/apk/repositories
 		[ "$repo" = "$target_repo" ] && break
@@ -53,7 +54,7 @@ cd "$APORTS_DIR" || exit
 mkdir -p "$HOME"/packages/"$RELEASE"/main/x86_64
 
 # lay down private key file
-echo -en "${SIGNING_KEY}" > ~/.abuild/packages@kws1.com-5f35c485.rsa
+echo -en "${SIGNING_KEY}" >~/.abuild/packages@kws1.com-5f35c485.rsa
 sudo cp ~/.abuild/packages@kws1.com-5f35c485.rsa.pub /etc/apk/keys/
 
 commit_range="$(git rev-parse 'HEAD^1')..HEAD"
@@ -74,7 +75,7 @@ for repo in znver1 main; do
 		echo "$pkgname" "Building package $qname"
 		cd "$qname" || continue
 
-		if abuild -r; then
+		if abuild -Kr; then
 			checkapk || :
 			successful_pkgs="$successful_pkgs $qname"
 		else

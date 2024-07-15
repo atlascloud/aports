@@ -10,3 +10,13 @@ src/
 tmp/
 packages/
 pkg/
+.bash_history
+**/__pycache__
+
+# something was making git status/fish take a lot of cpu/time
+.cache
+.cargo
+.config
+.local
+.npm
+go
