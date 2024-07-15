@@ -5,7 +5,7 @@ baseimage:
 	docker build --pull --tag ghcr.io/atlascloud/aports-builder:edge .
 	docker push ghcr.io/atlascloud/aports-builder:edge
 
-## Build the actual ceph packages
+## Build the actual packages
 build:
 	# docker pull atlascloud/ceph-builder
 	docker run --rm \
