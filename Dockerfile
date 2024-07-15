@@ -10,7 +10,7 @@ LABEL org.opencontainers.image.source "https://github.com/atlascloud/aports"
 # This is a container for building other software, it doesn't need pinned packages/etc
 # Also, the edge docker image gets pretty dated at times when ncopa is prep'ing a new release
 # hadolint ignore=DL3017,DL3018,DL3019
-RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo
+RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo fish
 # hadolint ignore=DL3017,DL3018,DL3019
 RUN apk upgrade
 
