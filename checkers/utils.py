@@ -1,4 +1,5 @@
 import requests
+import sys
 # from pkg_resources import parse_version # deprecated
 from packaging import version
 
@@ -15,6 +16,8 @@ def get_latest_gh_tag(proj: str, must_have: str = None, ignore: str = None) -> s
     j = r.json()
 
     for t in j:
+        if isinstance(t, str):
+            print("t", t, file=sys.stderr)
         if t.get('name') and t['name'] != "":
             try:
                 vers = version.parse(t['name'])

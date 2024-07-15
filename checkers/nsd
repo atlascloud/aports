@@ -15,6 +15,7 @@
 # NSD_4_3_0_RC1
 
 import requests
+import sys
 from packaging import version
 
 highest_version = '0.0.0'
@@ -24,6 +25,8 @@ r = requests.get('https://api.github.com/repos/nlnetlabs/nsd/tags')
 j = r.json()
 
 for t in j:
+    if isinstance(t, str):
+        print("t", t, file=sys.stderr)
     if t['name'].startswith('NSD_') and t['name'].endswith('_REL'):
         vers = t['name'].split('_', 1)[1].rsplit('_', 1)[0].replace('_', '.')
         if version.parse(vers) > version.parse(highest_version):
