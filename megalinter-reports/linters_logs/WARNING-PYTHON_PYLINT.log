@@ -1,0 +1,10 @@
+Results of pylint linter (version 3.2.5)
+See documentation on https://megalinter.io/7.13.0/descriptors/python_pylint/
+-----------------------------------------------
+
+❌ [ERROR] for workspace /github/workspace
+Linter raw log:
+************* Module utils
+checkers/utils.py:3:0: E0401: Unable to import 'requests' (import-error)
+checkers/utils.py:6:0: E0401: Unable to import 'packaging' (import-error)
+

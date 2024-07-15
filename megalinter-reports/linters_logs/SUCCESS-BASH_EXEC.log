@@ -1,0 +1,6 @@
+Results of bash-exec linter (version 5.2.26)
+See documentation on https://megalinter.io/7.13.0/descriptors/bash_bash_exec/
+-----------------------------------------------
+
+✅ [SUCCESS] entrypoint.sh
+✅ [SUCCESS] scripts/check_updates.sh

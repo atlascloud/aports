@@ -1,0 +1,32 @@
+Results of checkov linter (version 3.2.174)
+See documentation on https://megalinter.io/7.13.0/descriptors/repository_checkov/
+-----------------------------------------------
+
+❌ [ERROR] for workspace /github/workspace
+Linter raw log:
+dockerfile scan results:
+
+Passed checks: 62, Failed checks: 1, Skipped checks: 0
+
+Check: CKV2_DOCKER_1: "Ensure that sudo isn't used"
+	FAILED for resource: /Dockerfile.RUN
+	File: /Dockerfile:13-13
+	Guide: https://docs.prismacloud.io/en/enterprise-edition/policy-reference/docker-policies/docker-policy-index/ensure-docker-dont-use-sudo.html
+
+		13 | RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo fish
+
+github_actions scan results:
+
+Passed checks: 77, Failed checks: 3, Skipped checks: 0
+
+Check: CKV2_GHA_1: "Ensure top-level permissions are not set to write-all"
+	FAILED for resource: on(build packages)
+	File: /.github/workflows/build.yaml:0-1
+Check: CKV2_GHA_1: "Ensure top-level permissions are not set to write-all"
+	FAILED for resource: on(MegaLinter)
+	File: /.github/workflows/megalinter.yml:26-27
+Check: CKV2_GHA_1: "Ensure top-level permissions are not set to write-all"
+	FAILED for resource: on(check package versions for upgrades)
+	File: /.github/workflows/check-package-versions.yaml:0-1
+
+

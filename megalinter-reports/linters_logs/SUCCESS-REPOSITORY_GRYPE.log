@@ -1,0 +1,5 @@
+Results of grype linter (version 0.79.2)
+See documentation on https://megalinter.io/7.13.0/descriptors/repository_grype/
+-----------------------------------------------
+
+✅ [SUCCESS] for workspace /github/workspace

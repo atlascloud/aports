@@ -1,0 +1,116 @@
+Results of kics linter (version 2.1.1)
+See documentation on https://megalinter.io/7.13.0/descriptors/repository_kics/
+-----------------------------------------------
+
+❌ [ERROR] for workspace /github/workspace
+Linter raw log:
+
+                                                                                                                                                   
+                                                                                                                                                                                                    
+   MLLLLLM             MLLLLLLLLL   LLLLLLL             KLLLLLLLLLLLLLLLL       LLLLLLLLLLLLLLLLLLLLLLL 
+   MMMMMMM           MMMMMMMMMML    MMMMMMMK       LMMMMMMMMMMMMMMMMMMMML   KLMMMMMMMMMMMMMMMMMMMMMMMMM 
+   MMMMMMM         MMMMMMMMML       MMMMMMMK     LMMMMMMMMMMMMMMMMMMMMMML  LMMMMMMMMMMMMMMMMMMMMMMMMMMM 
+   MMMMMMM      MMMMMMMMMML         MMMMMMMK   LMMMMMMMMMMMMMMMMMMMMMMMML LMMMMMMMMMMMMMMMMMMMMMMMMMMMM 
+   MMMMMMM    LMMMMMMMMML           MMMMMMMK  LMMMMMMMMMLLMLLLLLLLLLLLLLL LMMMMMMMLLLLLLLLLLLLLLLLLLLLM 
+   MMMMMMM  MMMMMMMMMLM             MMMMMMMK LMMMMMMMM                    LMMMMMML                      
+   MMMMMMMLMMMMMMMML                MMMMMMMK MMMMMMML                     LMMMMMMMMLLLLLLLLLLLLLMLL     
+   MMMMMMMMMMMMMMMM                 MMMMMMMK MMMMMML                       LMMMMMMMMMMMMMMMMMMMMMMMMML  
+   MMMMMMMMMMMMMMMMMM               MMMMMMMK MMMMMMM                         LMMMMMMMMMMMMMMMMMMMMMMMML 
+   MMMMMMM KLMMMMMMMMML             MMMMMMMK LMMMMMMM                                          MMMMMMMML
+   MMMMMMM    LMMMMMMMMMM           MMMMMMMK LMMMMMMMMLL                                        MMMMMMML
+   MMMMMMM      LMMMMMMMMMLL        MMMMMMMK  LMMMMMMMMMMMMMMMMMMMMMMMMML LLLLLLLLLLLLLLLLLLLLMMMMMMMMMM
+   MMMMMMM        MMMMMMMMMMML      MMMMMMMK   MMMMMMMMMMMMMMMMMMMMMMMMML LMMMMMMMMMMMMMMMMMMMMMMMMMMMM 
+   MMMMMMM          LLMMMMMMMMML    MMMMMMMK     LLMMMMMMMMMMMMMMMMMMMMML LMMMMMMMMMMMMMMMMMMMMMMMMMML  
+   MMMMMMM             MMMMMMMMMML  MMMMMMMK         KLMMMMMMMMMMMMMMMMML LMMMMMMMMMMMMMMMMMMMMMMMLK    
+                                                                                                            
+                                                                                                                                                                                                                                                                                                                        
+
+
+Scanning with Keeping Infrastructure as Code Secure v2.1.1
+
+
+
+
+
+Apk Add Using Local Cache Path, Severity: INFO, Results: 1
+Description: When installing packages, use the '--no-cache' switch to avoid the need to use '--update' and remove '/var/cache/apk/*'
+Platform: Dockerfile
+CWE: 459
+Learn more about this vulnerability: https://docs.kics.io/latest/queries/dockerfile-queries/ae9c56a6-3ed1-4ac0-9b54-31267f51151d
+
+	[1]: Dockerfile:13
+
+		012: # hadolint ignore=DL3017,DL3018,DL3019
+		013: RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo fish
+		014: # hadolint ignore=DL3017,DL3018,DL3019
+
+
+Unpinned Actions Full Length Commit SHA, Severity: LOW, Results: 4
+Description: Pinning an action to a full length commit SHA is currently the only way to use an action as an immutable release. Pinning to a particular SHA helps mitigate the risk of a bad actor adding a backdoor to the action's repository, as they would need to generate a SHA-1 collision for a valid Git object payload. When selecting a SHA, you should verify it is from the action's repository and not a repository fork.
+Platform: CICD
+Learn more about this vulnerability: https://docs.kics.io/latest/queries/cicd-queries/555ab8f9-2001-455e-a077-f2d0f41e2fb9
+
+	[1]: .github/workflows/check-package-versions.yaml:13
+
+		012:     steps:
+		013:       - uses: arduino/setup-task@v2
+		014:         with:
+
+
+	[2]: .github/workflows/megalinter.yml:45
+
+		044:         # More info at https://megalinter.io/flavors/
+		045:         uses: oxsecurity/megalinter@v7
+		046:         env:
+
+
+	[3]: .github/workflows/megalinter.yml:72
+
+		071:         if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_n
+		072:         uses: peter-evans/create-pull-request@v6
+		073:         with:
+
+
+	[4]: .github/workflows/megalinter.yml:90
+
+		089:         if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/main' && (github.event_name == 'push' || github.event.
+		090:         uses: stefanzweifel/git-auto-commit-action@v4
+		091:         with:
+
+
+Healthcheck Instruction Missing, Severity: LOW, Results: 1
+Description: Ensure that HEALTHCHECK is being used. The HEALTHCHECK instruction tells Docker how to test a container to check that it is still working
+Platform: Dockerfile
+CWE: 710
+Learn more about this vulnerability: https://docs.kics.io/latest/queries/dockerfile-queries/b03a748a-542d-44f4-bb86-9199ab4fd2d5
+
+	[1]: Dockerfile:4
+
+		003: # some dependencies are only in edge, should build for stable releases later too
+		004: FROM alpine:edge
+		005: 
+
+
+Unpinned Package Version in Apk Add, Severity: MEDIUM, Results: 1
+Description: Package version pinning reduces the range of versions that can be installed, reducing the chances of failure due to unanticipated changes
+Platform: Dockerfile
+CWE: 1357
+Learn more about this vulnerability: https://docs.kics.io/latest/queries/dockerfile-queries/d3499f6d-1651-41bb-a9a7-de925fea487b
+
+	[1]: Dockerfile:13
+
+		012: # hadolint ignore=DL3017,DL3018,DL3019
+		013: RUN apk add bash alpine-conf alpine-sdk ccache cmake coreutils m4 sudo fish
+		014: # hadolint ignore=DL3017,DL3018,DL3019
+
+
+
+Results Summary:
+CRITICAL: 0
+HIGH: 0
+MEDIUM: 1
+LOW: 5
+INFO: 1
+TOTAL: 7
+
+

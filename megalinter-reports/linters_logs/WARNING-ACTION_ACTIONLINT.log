@@ -1,0 +1,11 @@
+Results of actionlint linter (version 1.7.1)
+See documentation on https://megalinter.io/7.13.0/descriptors/action_actionlint/
+-----------------------------------------------
+
+❌ [ERROR] for workspace /github/workspace
+Linter raw log:
+.github/workflows/build.yaml:49:9: shellcheck reported issue in this script: SC2044:warning:3:12: For loops over find output are fragile. Use find -exec or a while read loop [shellcheck]
+   |
+49 |         run: |
+   |         ^~~~
+
