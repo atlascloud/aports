@@ -7,23 +7,32 @@ dotenv: [".env"]
 #   FOO: bar
 
 # env
+vars:
+  CNTRCTL:
+    sh: echo nerdctl
+    # sh: which docker || which nerdctl
+
 
 tasks:
   docker:build:
     desc: build docker builder image
     cmds:
-      - docker build --pull --tag ghcr.io/atlascloud/aports-builder:edge .
+      - |
+        {{ .CNTRCTL }} pull alpine:edge
+        {{ .CNTRCTL }} build --tag ghcr.io/atlascloud/aports-builder:edge .
 
   docker:push:
     desc: push builder image to github packages
     cmds:
-      - docker push ghcr.io/atlascloud/aports-builder:edge
+      - |
+        {{- .CNTRCTL }} push ghcr.io/atlascloud/aports-builder:edge
 
   docker:run:
     desc: run the builder image
     cmds:
       - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
-      - docker run -it --rm
+      - |
+        {{- .CNTRCTL }} run -it --rm
         --env-file .env
         -v ${PWD}:/home/build
         -v ${PWD}/apkcache:/etc/apk/cache
@@ -34,18 +43,21 @@ tasks:
     desc: run a shell in the builder image (useful for debugging)
     cmds:
       - mkdir -p apkcache/ distfiles/ packages/ .ccache/ .abuild/
-      - docker run -it --rm
+      - |
+        {{- .CNTRCTL }} run -it --rm
         --env-file .env
         -v ${PWD}:/home/build
         -v ${PWD}/apkcache:/etc/apk/cache
         -v ${PWD}/distfiles:/var/cache/distfiles
         --entrypoint /bin/sh
+        --network host
         --name aports-builder ghcr.io/atlascloud/aports-builder:edge
 
   docker:checksum:
     desc: generate checksums for a package, must specify 'PKG'
     cmds:
-      - docker run --rm
+      - |
+        {{- .CNTRCTL }} run --rm
         -v ${PWD}:/aports
         -v ${PWD}/apkcache:/etc/apk/cache
         -v ${PWD}/distfiles:/var/cache/distfiles
@@ -55,7 +67,8 @@ tasks:
   docker:super-linter:
     desc: run super linter - should switch to megalinter
     cmds:
-      - docker run
+      - |
+        {{- .CNTRCTL }} run
         -e RUN_LOCAL=true
         -e ACTIONS_RUNNER_DEBUG=false
         -e FILTER_REGEX_EXCLUDE='/tmp/lint/(.abuild|.cacche|.git|apkcache|distfiles|src|tmp)'
@@ -65,7 +78,8 @@ tasks:
   docker:test:
     desc: run tests in docker
     cmds:
-      - docker run
+      - |
+        {{- .CNTRCTL }} run
         --workdir /src
         -v ${PWD}:/src
         alpine:edge
@@ -85,7 +99,7 @@ tasks:
             apkbuild-lint APKBUILD
             cd /src
           {{end}}
-        ignore_errors: true
+        ignore_error: true
 
   upload-package:
     desc: upload a package to packages server
@@ -94,19 +108,37 @@ tasks:
     cmds:
       - |
         {{ $SL := splitList "/" .PKG -}}
-        {{ $repo := slice $SL 2 3 | first -}}
         {{ $vers := slice $SL 1 2 | first -}}
+        {{ $repo := slice $SL 2 3 | first -}}
+        {{ $arch := slice $SL 3 4 | first -}}
         curl -v \
           -H "Authorization: Bearer $PKGS_TOKEN" \
-          -F "architecture=x86_64;type=text/plain" \
           -F "package=@{{ .PKG }}" \
-          https://packages.atlascloud.xyz/api/o/atlascloud/r/{{ $repo }}/v/{{ $vers }}
+          https://packages.atlascloud.xyz/api/atlascloud/alpine/{{ $vers }}/{{ $repo }}/{{ $arch }}/pkgs
+
+  # we used to do this automatically on the package server, but it can take a very long time and it was doing it
+  # on every package upload
+  sign-package-index:
+    desc: instruct the packages server to generate and sign the index with the packages that we've uploaded so far
+    # vars:
+    #   PKG: should be set on command line - we aren't doing anything with the pkg, just extracting info from the path
+    cmds:
+      - |
+        {{ $SL := splitList "/" .PKG -}}
+        {{ $vers := slice $SL 1 2 | first -}}
+        {{ $repo := slice $SL 2 3 | first -}}
+        {{ $arch := slice $SL 3 4 | first -}}
+        {{ $arch := slice $SL 3 4 | first -}}
+        curl \
+          -X POST \
+          -H "Authorization: Bearer $PKGS_TOKEN" \
+          https://packages.atlascloud.xyz/api/atlascloud/alpine/{{ $vers }}/{{ $repo }}/{{ $arch }}/index
 
   check-pkg-version:
     desc: run checker scripts
     cmds:
       - |
-        pkg={{ .PKG | splitList "/" | last }}
+        pkg={{ .PKG | dir | base }}
         echo "checking $pkg"
         [ -f "./checkers/$pkg" ] || exit 0 # if we don't have a checker, skip
 
@@ -116,14 +148,23 @@ tasks:
         sed -i "s:pkgrel=.*:pkgrel=0:" main/$pkg/APKBUILD
 
   check-pkg-versions:
+    desc: run checker scripts for every APKBUILD
     vars:
       ABS:
         sh: find . -name APKBUILD
     cmds:
-      # loop over all of the apkbuild files and run check_pkg_version
-      # for that pkg name
-      # {{range $i, $APKBUILD := .ABS | splitLines -}}
-      # - task: check-pkg-version
-      #   vars:
-      #     PKG: "{{$APKBUILD | dir | base}}"
-      # {{end}}
+  #     # loop over all of the apkbuild files and run check_pkg_version
+  #     # for that pkg name
+  #     # {{range $i, $APKBUILD := .ABS | splitLines -}}
+  #     # - task: check-pkg-version
+  #     #   vars:
+  #     #     PKG: "{{$APKBUILD | dir | base}}"
+  #     # {{end}}
+  #     # loop over all of the apkbuild files and run check_pkg_version
+  #     # for that pkg name
+      # {{ range $i, $APKBUILD := .ABS | splitLines -}}
+      - for: { var: ABS }
+        task: check-pkg-version
+        vars:
+          PKG: "{{ .ITEM }}"
+      # {{ end }}

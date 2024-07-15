@@ -3,7 +3,7 @@ import sys
 # from pkg_resources import parse_version # deprecated
 from packaging import version
 
-def get_latest_gh_tag(proj: str, must_have: str = None, ignore: str = None) -> str:
+def get_latest_gh_tag(proj: str, must_have: str = "", ignore: str = "") -> str:
     """find latest version based on gh tags
 
     :param proj:
@@ -21,13 +21,13 @@ def get_latest_gh_tag(proj: str, must_have: str = None, ignore: str = None) -> s
         if t.get('name') and t['name'] != "":
             try:
                 vers = version.parse(t['name'])
-            except:
+            except InvalidVersion:
                 # probably some weird tag (I've seen nightly as an example)
                 continue
-            if must_have:
+            if must_have != "":
                 if must_have not in t['name']:
                     continue
-            if ignore:
+            if ignore != "":
                 if ignore in t['name']:
                     continue
             if vers > highest_version:
@@ -36,7 +36,7 @@ def get_latest_gh_tag(proj: str, must_have: str = None, ignore: str = None) -> s
     return highest_version
 
 
-def get_latest_gh_releases(proj: str, must_have: str = None, ignore: str = None) -> str:
+def get_latest_gh_releases(proj: str, must_have: str = "", ignore: str = "") -> str:
     """find latest version based on gh releases
 
     :param proj:
@@ -54,13 +54,13 @@ def get_latest_gh_releases(proj: str, must_have: str = None, ignore: str = None)
         if t.get('tag_name') and t['tag_name'] != "":
             try:
                 vers = version.parse(t['tag_name'])
-            except:
+            except InvalidVersion:
                 # probably some weird tag (I've seen nightly as an example)
                 continue
-            if must_have:
+            if must_have != "":
                 if must_have not in t['tag_name']:
                     continue
-            if ignore:
+            if ignore != "":
                 if ignore in t['tag_name']:
                     continue
             if vers > highest_version:
