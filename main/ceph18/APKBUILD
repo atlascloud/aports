@@ -3,8 +3,8 @@
 # Contributor: Duncan Bellamy <dunk@denkimushi.com>
 # Maintainer: Duncan Bellamy <dunk@denkimushi.com>
 _pkgname=ceph
-pkgver=18.2.3
-pkgrel=40
+pkgver=19.2.0
+pkgrel=0
 _majorver=${pkgver%%.*}
 pkgname=$_pkgname$_majorver
 pkgdesc="Ceph is a distributed object store and file system, version $_majorver"
@@ -735,7 +735,7 @@ _default_replace_majorversion() {
 
 
 sha512sums="
-224349dcf531570ba0bde63b952f67d34128d76a24f59c6dade487257fbcee1f31dbf45e14e1716da051a6c016080cfa162a86803e08c23e7da1c52605428903  ceph-18.2.3.tar.gz
+c7c68229b0bc5cf33ec30945c07ee464c757dc47812c0a901dd6e73a088f7a053ecd537468c6ca7caae91ed7d1fb25bde4630e5004f1717e22355ce276da005f  ceph-19.2.0.tar.gz
 110bdbcb40216c7ed155a8d23020784741b4992d895f4f04a146d275506e4e68053854d3b063b41e9c9b3e3e4f95b6b90602f92c185c853c0d8f47ad0c6b7121  ceph.confd
 56fe33b33c594d509388968645748c2977050931e6496a202dd674d86a70d900aaf257eab9b283231a20b213865c31c22bd8887fbdc1a4300610160246b9470d  ceph.initd
 7e22028109cccffe026899ea20b02f8077261d5f6fcd69fe627179712c85820ff7b66992d191f634233d0138513ec064deb759a2422b15b94a69ab2892c2da1b  10-isal_crypto.patch
