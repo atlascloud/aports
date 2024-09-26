@@ -1,7 +1,7 @@
 # Maintainer: Iggy Jackson <iggy@iggy.ninja>
 pkgname=adguardhome
-pkgver=0.107.49
-pkgrel=0
+pkgver=0.107.52
+pkgrel=2
 pkgdesc="Network-wide ads & trackers blocking DNS server"
 url="https://adguard.com/adguard-home.html"
 options="!check chmod-clean net setcap"
@@ -19,29 +19,35 @@ source="$pkgname.initd
         "
 
 export CGO_ENABLED="0"
+export NODE_OPTIONS="--openssl-legacy-provider"
 #export GOCACHE="$srcdir/go-cache"
 #export GOTMPDIR="$srcdir"
 #export GOMODCACHE="$srcdir/go"
 
 build() {
-				version_pkg="github.com/AdguardTeam/AdGuardHome/internal/version"
+        # rebuild the frontend to work around openssl issue
+        # note: Makefile doesn't like -j >1 so just run it with -j1 here
+        make -j1 js-deps js-build
 
-				go build \
-								-o $pkgname \
-								--ldflags " \
-												-X "$version_pkg.version=v$pkgver" \
-												-X "$version_pkg.channel=release" \
-												-X "$version_pkg.committime=" \
-								" \
+        # now the go/backend bits
+        version_pkg="github.com/AdguardTeam/AdGuardHome/internal/version"
+
+        go build \
+                -o $pkgname \
+                --ldflags " \
+                        -X "$version_pkg.version=v$pkgver" \
+                        -X "$version_pkg.channel=release" \
+                        -X "$version_pkg.committime=" \
+                " \
 								
 
 }
 
 package() {
-				install -Ddm755 -o adguard -g adguard "$pkgdir"/var/lib/adguardhome
+        install -Ddm755 -o adguard -g adguard "$pkgdir"/var/lib/adguardhome
 
         install -Dm755 -o adguard -g adguard "$srcdir"/AdGuardHome-$pkgver/$pkgname -t "$pkgdir"/usr/sbin
-				# https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#running-without-superuser
+        # https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#running-without-superuser
         setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' "$pkgdir"/usr/sbin/$pkgname
 
         install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
@@ -49,5 +55,5 @@ package() {
 
 sha512sums="
 a2c616dcec8b77fbf30e8e48dd5c84de887f7d2bfef75d229425d72dd5a4625c1f1bcdc6803f57f9439b9bbf4f92854d8a7cdcc815891292a31fd82d5866a784  adguardhome.initd
-20e5c528a00d87658be90d7320972b44db10e1537d5a836d83dadf772c4f54754272e69bc2565163e5847375fd4d9a0159f7ef9eb552beadee2432330729b373  adguardhome-0.107.49.tar.gz
+92e0524721777ca5145a052e31fc08c91d8633996f689d9a8fb0d1a3bc4da18c326369b52c93bc0bb3907835c8442f15b08ff9d85e073df66dd9a4bebf4d316d  adguardhome-0.107.52.tar.gz
 "
