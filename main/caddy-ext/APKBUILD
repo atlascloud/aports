@@ -1,6 +1,6 @@
 # Maintainer: Iggy Jackson <iggy@iggy.ninja>
 pkgname=caddy-ext
-pkgver=2.8.4
+pkgver=2.9.0
 pkgrel=0
 pkgdesc="Fast, multi-platform web server with automatic HTTPS with extensions"
 url="https://caddyserver.com/"
