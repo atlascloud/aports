@@ -4,12 +4,12 @@ _flavor=stable
 pkgname=linux-${_flavor}
 # NOTE: this kernel is intended for testing
 # please resist urge to upgrade it blindly
-pkgver=6.9.3
+pkgver=6.13.8
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
 esac
-pkgrel=1
+pkgrel=0
 pkgdesc="Linux latest stable kernel"
 url="https://www.kernel.org"
 depends="initramfs-generator"
@@ -270,8 +270,8 @@ _doc() {
 }
 
 sha512sums="
-fed3b4cd1fbfb4d94618587c1934273d2ecc8b6e42a3d586ff8a5f24980be930f2ef803aa2923ca3bfa5e4e619f967f3af315368f24fa76f610b10443624a579  linux-6.9.tar.xz
-5d47559efcc796b921e00fbefd1468c88da91afe70519aa721d825232d9b76c39c2d5096adc110481c5418da35689d6d835f794121b8783fa39b0d03dd44d460  patch-6.9.3.xz
+1137e6440132b0958f89165440e99208f82b204e7245ae69dc9c808df97d13ce8f58136db92407e0e93394fa7f6283ec7a34597c6e92a5b6d9025e0960357957  linux-6.13.tar.xz
+4d42a04c87501191b2887cb08f9bf806e3e1b3f4ea75640670db756f7cbafcc3e6194134351be877755c47b4f625849d8c23ac7603ba06f80b9d312f9e763306  patch-6.13.8.xz
 cbe05f0faddb4ca2a6deac4c42f8afce67bf84d02be4c311de63002f87e19c19ea4a81a601a16111588875076584de045c63374e55736422adf1a11838d0cf45  config-stable.aarch64
 3e8810419679f286cbeaae225b8bb2f0b50f0070a0565d0da9376cb715a1f7da40395bdf6f4b7a7962e0d44ca7bc673a83149a1ca71d02dd5ffb1adc861ab652  config-stable.armv7
 5dc6383869b9960c55c7d919d22013b95c5e62f6b10f434a0a4ced439155b4e1a4eb9e26aec10a24632bee3b115875b46b926f9c779b779c61ebe82d62466c75  config-stable.x86_64
