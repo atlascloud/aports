@@ -1,7 +1,7 @@
 # Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
 # Maintainer: Justin Berthault <justin.berthault@zaclys.net>
 pkgname=micro
-pkgver=2.0.13
+pkgver=2.0.14rc1
 pkgrel=0
 # This will need to be updated along with version as it cannot currently be
 # obtained from the tarball, and is necessary if the user is to make error
@@ -37,6 +37,3 @@ package() {
 	install -Dm644 "$builddir"/assets/micro-solarized.png "$pkgdir"/usr/share/pixmaps/micro.png
 }
 
-sha512sums="
-b4b1dd3b03c906ee5c0bf9d0b576efea2a527fcdb0fe40338c78515fd5f6a4eb22bd9541567bb5956c4087e749775a1e8c33a73d185f7a6b00ba91e405d6a117  micro-2.0.13.tar.gz
-"
