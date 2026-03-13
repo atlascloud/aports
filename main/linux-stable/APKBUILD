@@ -4,7 +4,7 @@ _flavor=stable
 pkgname=linux-${_flavor}
 # NOTE: this kernel is intended for testing
 # please resist urge to upgrade it blindly
-pkgver=6.19.4
+pkgver=6.19.8
 case $pkgver in
 	*.*.*)	_kernver=${pkgver%.*};;
 	*.*) _kernver=$pkgver;;
@@ -271,7 +271,7 @@ _doc() {
 
 sha512sums="
 01b29c7f4e5bc0c9802794c2cd027fece825f90417be229a71e60eefce530010d5d301749c54ae744e9d4a483518e769e2bb7e6e9209687681ad7fff11c3ed86  linux-6.19.tar.xz
-79cb9e9b3f9560bb3bf982a332f8ac59004fd0353a8fa5873b82913b19ca767d761c9563ee353d727dc21ad257c7a044257b1e65cd9e532b446ecc338b0dd728  patch-6.19.4.xz
+21954614fc95f8e6f76f82d702eaea7e7ce75af041e95fe0e230b8030825c6538e4f8b20df7d98e955d8d353ab5cdf4025868f0ca074efd417064c72f5c42631  patch-6.19.8.xz
 cbe05f0faddb4ca2a6deac4c42f8afce67bf84d02be4c311de63002f87e19c19ea4a81a601a16111588875076584de045c63374e55736422adf1a11838d0cf45  config-stable.aarch64
 3e8810419679f286cbeaae225b8bb2f0b50f0070a0565d0da9376cb715a1f7da40395bdf6f4b7a7962e0d44ca7bc673a83149a1ca71d02dd5ffb1adc861ab652  config-stable.armv7
 5dc6383869b9960c55c7d919d22013b95c5e62f6b10f434a0a4ced439155b4e1a4eb9e26aec10a24632bee3b115875b46b926f9c779b779c61ebe82d62466c75  config-stable.x86_64
