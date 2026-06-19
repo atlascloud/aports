@@ -17,7 +17,7 @@ jobs:
         release: [edge] # TODO 3.12, 3.11, etc
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 5
           clean: false
